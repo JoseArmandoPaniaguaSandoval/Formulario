@@ -1,71 +1,128 @@
 <script>
-  export default{
-    data:() =>({
-      proyecto: "",
-      tipo:"",
-      urgente:false,
-      proyectos:[],
-    }),
-    methods:{
-      registrarProyecto(){
-        const proyecto ={
-          proyecto: this.proyecto,
-          tipo: this.tipo,
-          urgente: this.urgente,
-        };
-        this.proyectos.push(proyecto);
-        console.log(this.proyectos);
+export default {
+  data: () => ({
+    proyecto: "",
+    tipo: "",
+    urgente: false,
+    proyectos: [],
+  }),
+  methods: {
+    registrarProyecto() {
+      const proyecto = {
+        proyecto: this.proyecto,
+        tipo: this.tipo,
+        urgente: this.urgente,
+        completado: false,
+      };
+      this.proyectos.push(proyecto);
+      console.log(this.proyectos);
 
-        this.proyecto="";
-        this.tipo="";
-        this.urgente=false;
+      this.proyecto = "";
+      this.tipo = "";
+      this.urgente = false;
+    },
+    cambiarEstado(proyecto, campo) {
+      proyecto[campo] = !proyecto[campo];
+    },
+    computed: {
+      numeroProyectos() {
+        return this.proyectos.length;
+      },
+      porcentaje() {
+        let completados = 0;
+        this.proyectos.map((proyecto) => {
+          if (proyecto.completado) completados++;
+        });
+        return (completados * 100) / this.numeroProyectos;
       },
     },
-  };
+  },
+};
 </script>
 <template>
-    <form  @submit.prevent="registrarProyecto">
+  <div class="row">
+    <div class="col-12 mb-4">
+      <h3 class="text-center">Progreso del 0%</h3>
+      <div class="progress">
+        <div
+          class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+          role="progressbar"
+          aria-valuenow="25"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          style="width: 75%"
+        ></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-4">
+      <form @submit.prevent="registrarProyecto">
         <div class="mb-3">
           <label class="form-label">Proyecto</label>
-          <input v-model.trim="proyecto" type="text" class="form-control" required/>
-        
+          <input
+            v-model.trim="proyecto"
+            type="text"
+            class="form-control"
+            required
+          />
         </div>
         <div class="mb-3">
           <label class="form-label">Actividad</label>
-          <select  v-model.trim="tipo" class="form-select" required>
-            <option disabled selected value="">Seleccion un tipo de actividad</option>
+          <select v-model.trim="tipo" class="form-select" required>
+            <option disabled selected value="">
+              Seleccion un tipo de actividad
+            </option>
             <option>Aplicaciones web con Vue</option>
             <option>Backend servicios con Node.js</option>
             <option>App movil con React Native</option>
           </select>
-        
         </div>
         <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-check-label">Urgente</label>
+          <label for="exampleInputPassword1" class="form-check-label"
+            >Urgente</label
+          >
           <input v-model="urgente" type="checkbox" class="form-check-input" />
         </div>
-        
+
         <button type="submit" class="btn btn-primary">Guardar</button>
       </form>
-      <hr>
+    </div>
+
+    <div class="col-12 col-md-8">
+      <h3>Total de proyectos {{ numeroProyectos }}</h3>
       <div class="table-responsive">
-        <table class="table table-dark">
+        <table class="table table-dark table-hover">
           <thead>
             <tr>
               <th>#</th>
               <th>Proyecto</th>
               <th>Tipo</th>
               <th>Urgente</th>
+              <th>completado</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Laravel app</td>
-              <td>Laravel</td>
-              <td class="bg-danger">si/no</td>
+            <tr v-for="(proyecto, index) in proyectos" :key="index">
+              <td>{{ index + 1 }}</td>
+              <td>{{ proyecto.proyecto }}</td>
+              <td>{{ proyecto.tipo }}</td>
+              <td
+                @click="cambiarEstado(proyecto, 'urgente')"
+                :class="proyecto.urgente ? 'bg-success' : 'bg-danger'"
+              >
+                {{ proyecto.urgente ? "Si" : "No" }}
+              </td>
+              <td
+                @click="cambiarEstado(proyecto, 'completado')"
+                :class="proyecto.urgente ? 'bg-success' : 'bg-danger'"
+              >
+                {{ proyecto.urgente ? "Completado" : "Incompleto" }}
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
+    </div>
+  </div>
 </template>
