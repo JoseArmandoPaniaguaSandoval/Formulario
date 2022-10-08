@@ -40,7 +40,7 @@
             {{ proyecto.completado ? "Completado" : "Incompleto" }}
           </td>
 
-          <td >
+          <td @click="eliminarProyecto(index)">
             <i class="bi bi-trash3-fill"></i>
           </td>
 
@@ -52,6 +52,6 @@
 
 <script>
 export default {
-  props: ["numeroProyectos", "proyectos", "cambiarEstado", "limpiarData"],
+  props: ["numeroProyectos", "proyectos", "cambiarEstado", "limpiarData", "eliminarProyecto"],
 };
 </script>

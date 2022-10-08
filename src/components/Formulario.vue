@@ -45,6 +45,7 @@
         :proyectos="proyectos"
         :cambiarEstado="cambiarEstado"
         :limpiarData="limpiarData"
+        :eliminarProyecto="eliminarProyecto"
       />
     </div>
   </div>
@@ -90,6 +91,10 @@ export default {
     limpiarData(){
       this.proyectos=[];
       localStorage.clear();
+    },
+    eliminarProyecto(id){
+      this.proyectos.splice(id,1);
+      this.saveData();
     },
   },
   computed: {
